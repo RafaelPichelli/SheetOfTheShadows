@@ -1,4 +1,3 @@
-import Topo from "../../componentes/Topo";
 import {FlatList, StyleSheet, TouchableOpacity, View} from "react-native";
 import Talento from "../Atributos/componentes/Talento";
 import React, {useEffect, useState} from "react";

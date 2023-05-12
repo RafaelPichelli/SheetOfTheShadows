@@ -1,24 +1,36 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
 import Texto from "./Texto";
 import {buscaGerais, buscaGeral, dropTableGerais} from "../servicos/geraisDB";
 import Sorte from "./Sorte";
 import ModalSorte from "./ModalSorte";
+import ModalNome from "./ModalNome";
 
 
 export default function Topo() {
-    const [gerais, setGerais] = useState([{texto: ""}, {texto: ""}, {texto: ""}, {texto: ""}])
-    const [sorte, setSorte] = useState("0")
-    const [sorteSelecionada,setSorteSelecionada] = useState("");
-    const [modalVisivel, setModalVisivel] = useState(false)
+    const [gerais, setGerais] = useState([{texto: ""},{texto: ""}, {texto: ""}, {texto: ""}])
+    const [nomePersonagem, setNomePersonagem] = useState("Nome Personagem")
+    const [sorte, setSorte] = useState("0");
+    const [modalSorteVisivel, setModalSorteVisivel] = useState(false)
+    const [modalNomeVisivel, setModalNomeVisivel] = useState(false)
+    const [modalGeraisVisivel, setModalGeraisVisivel] = useState(false)
     useState(() => {
         carregaGerais();
+        carregaNome();
         carregaSorte();
     }, [])
 
     async function carregaGerais() {
         const todasGerais = await buscaGerais()
         setGerais(todasGerais)
+
+        setNomePersonagem(todasGerais[0].texto)
+    }
+
+    async function carregaNome() {
+        const nome = await buscaGeral('nomeDoPersonagem');
+
+        setNomePersonagem(nome[0].texto)
     }
 
     async function carregaSorte() {
@@ -27,19 +39,27 @@ export default function Topo() {
         setSorte(sorte[0].texto)
     }
 
-
-    const nomePersonagem = gerais[0].texto;
     const nivelPersonagem = gerais[1].texto;
     const racaPersonagem = gerais[2].texto;
     const classePersonagem = gerais[3].texto;
 
     return <>
-    <View style={estilos.topo}>
-            <Texto style={estilos.nomePersonagem}>{nomePersonagem}</Texto>
-            <Texto style={estilos.detalhesPersonagem}>{` Niv.: ${nivelPersonagem}, ` + racaPersonagem + ", " + classePersonagem}</Texto>
-            <Sorte sorte={sorte} modalSorteVisivel={setModalVisivel}/>
-            </View>
-        <ModalSorte sorte={sorte} modalVisivel={modalVisivel} setModalVisivel={setModalVisivel} setSorte={carregaSorte}/>
+        <View style={estilos.topo}>
+            <TouchableOpacity onPress={() => setModalNomeVisivel(true)}>
+                <Texto style={estilos.nomePersonagem}>{nomePersonagem}</Texto>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => console.log("press")}>
+                <Texto
+                    style={estilos.detalhesPersonagem}>{` Niv.: ${nivelPersonagem}, ` + racaPersonagem + ", " + classePersonagem}</Texto>
+            </TouchableOpacity>
+
+            <Sorte sorte={sorte} modalSorteVisivel={setModalSorteVisivel}/>
+        </View>
+        <ModalSorte sorte={sorte} modalVisivel={modalSorteVisivel} setModalVisivel={setModalSorteVisivel}
+                    setSorte={carregaSorte}/>
+        <ModalNome nome={nomePersonagem} modalVisivel={modalNomeVisivel} setModalVisivel={setModalNomeVisivel}
+                   setNome={carregaNome}/>
     </>
 }
 
