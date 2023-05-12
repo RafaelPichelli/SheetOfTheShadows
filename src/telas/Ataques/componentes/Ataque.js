@@ -17,13 +17,18 @@ const formatMod = (atr, forAgi) => {
     }
 }
 
-export default function Ataque({ataque, forcaAgilidade, setSelecionado}) {
+export default function Ataque({ataque, forcaAgilidade, setSelecionado, setModalVisivel}) {
     const modificadorTexto = useMemo(
         () => formatMod(ataque.atributo, forcaAgilidade),
         [forcaAgilidade]
     );
 
-    return <TouchableOpacity style={estilos.cartao} onPress ={() => setSelecionado(ataque)}>
+    const chamaModal = () => {
+        setSelecionado(ataque);
+        setModalVisivel(true);
+    }
+
+    return <TouchableOpacity style={estilos.cartao} onPress ={() => chamaModal()}>
         <View style={estilos.informacoes}>
             <Texto style={estilos.nome}>{`${ataque.nome}`}</Texto>
 

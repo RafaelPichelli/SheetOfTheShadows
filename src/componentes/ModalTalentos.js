@@ -4,22 +4,22 @@ import Texto from "./Texto";
 import {Picker} from "@react-native-picker/picker";
 import {adicionaTalento, atualizaTalento, removeTalento} from "../servicos/talentosDB";
 import {Checkbox} from "expo-checkbox";
-export default function ModalTalentos({selecionado, setSelecionado, setTalentos}) {
+export default function ModalTalentos({selecionado, setSelecionado, modalVisivel, setModalVisivel, setTalentos}) {
   useEffect(() =>{
-    if (selecionado[0] != ""){
-      preencheModal()
-      setTalentoParaAtualizar(true)
-      setModalVisivel(true)
-      return
+    if (modalVisivel){
+      if (selecionado[0] != ""){
+        preencheModal()
+        setTalentoParaAtualizar(true)
+        return
+      }
+      setTalentoParaAtualizar(false)
     }
-    setTalentoParaAtualizar(false)
-  },[selecionado])
+  },[modalVisivel])
 
   const [nome,setNome] = useState("")
   const [efeito, setEfeito] = useState("")
   const [tipo,setTipo] = useState("Utilidade")
   const [usadoCombate, setUsadoCombate] = useState(false)
-  const [modalVisivel, setModalVisivel] = useState(false)
   const [talentoParaAtualizar, setTalentoParaAtualizar] = useState(false)
   async function salvaTalento(){
     const talento = {
@@ -131,11 +131,6 @@ export default function ModalTalentos({selecionado, setSelecionado, setTalentos}
           </ScrollView>
         </View>
       </Modal>
-      <View style={estilos.viewNovoTalento}>
-        <TouchableOpacity style={estilos.botaoNovoTalento} onPress={() => {setModalVisivel(true)}}>
-          <Texto style={estilos.textoNovoTalento}>Criar novo talento</Texto>
-        </TouchableOpacity>
-      </View>
     </>
   )
 }
@@ -209,21 +204,6 @@ const estilos = StyleSheet.create({
   },
   modalBotaoTexto: {
     color: "#FFFFFF",
-  },
-  viewNovoTalento: {
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingBottom:12,
-  },
-  botaoNovoTalento: {
-    backgroundColor: '#ad0606',
-    borderRadius: 5,
-    padding: 8,
-    alignItems: "center",
-  },
-  textoNovoTalento: {
-    color: '#000',
-    fontSize:21,
   },
   modalPicker: {
     borderWidth: 1,

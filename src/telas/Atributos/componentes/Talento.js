@@ -1,9 +1,14 @@
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import Texto from "../../../componentes/Texto";
 
-export default function Talento({id, nome, efeito, tipo, usadoEmCombate, setSelecionado}) {
+export default function Talento({id, nome, efeito, tipo, usadoEmCombate, setSelecionado, setModalVisivel}) {
 
-    return <TouchableOpacity style={estilos.cartao} onPress={() => setSelecionado([id,nome,efeito,tipo,usadoEmCombate])}>
+  function chamaModal (){
+    setSelecionado([id,nome,efeito,tipo,usadoEmCombate]);
+    setModalVisivel(true);
+  }
+
+    return <TouchableOpacity style={estilos.cartao} onPress={() => chamaModal()}>
       <View style={estilos.informacoes}>
         <View>
           <Texto style={estilos.nome}>{ nome }</Texto>

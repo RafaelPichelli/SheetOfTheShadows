@@ -5,17 +5,18 @@ import {Checkbox} from "expo-checkbox";
 import {Picker} from "@react-native-picker/picker";
 import {adicionaAtaque, atualizaAtaque, removeAtaque} from "../../../servicos/ataquesDB";
 
-export default function ModalAtaques({selecionado, setSelecionado, setAtaques}) {
+export default function ModalAtaques({selecionado, setSelecionado, modalVisivel, setModalVisivel, setAtaques}) {
 
     useEffect(() => {
-        if (selecionado.id) {
-            preencheModal()
-            setItemParaAtualizar(true)
-            setModalVisivel(true)
-            return
+        if(modalVisivel){
+            if (selecionado.id) {
+                preencheModal()
+                setItemParaAtualizar(true)
+                return
+            }
+            setItemParaAtualizar(false)
         }
-        setItemParaAtualizar(false)
-    }, [selecionado])
+    }, [modalVisivel])
 
     const [nome, setNome] = useState("")
     const [distancia, setDistancia] = useState("Corpo a corpo")
@@ -24,7 +25,6 @@ export default function ModalAtaques({selecionado, setSelecionado, setAtaques}) 
     const [dano, setDano] = useState("")
     const [critico, setCritico] = useState("")
     const [efeito, setEfeito] = useState("")
-    const [modalVisivel, setModalVisivel] = useState(false)
     const [itemParaAtualizar, setItemParaAtualizar] = useState(false)
     const [temCritico, setTemCritico] = useState(false);
     const [temEfeito, setTemEfeito] = useState(false);
@@ -245,13 +245,6 @@ export default function ModalAtaques({selecionado, setSelecionado, setAtaques}) 
         </ScrollView>
         </View>
 </Modal>
-    <View style={estilos.viewNovoTalento}>
-        <TouchableOpacity style={estilos.botaoNovoTalento} onPress={() => {
-            setModalVisivel(true)
-        }}>
-            <Texto style={estilos.textoNovoTalento}>Criar novo ataque</Texto>
-        </TouchableOpacity>
-    </View>
 </>
 )
 }
