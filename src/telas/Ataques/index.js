@@ -1,5 +1,5 @@
 import Topo from "../../componentes/Topo";
-import {FlatList, StyleSheet, View} from "react-native";
+import {FlatList, StyleSheet, TouchableOpacity, View} from "react-native";
 import Talento from "../Atributos/componentes/Talento";
 import React, {useEffect, useState} from "react";
 import Ataque from "./componentes/Ataque";
@@ -24,6 +24,8 @@ export default function Ataques() {
     const [listaAtaques, setListaAtaques] = useState([]);
     const [ataqueSelecionado, setAtaqueSelecionado] = useState([]);
     const [filtroDist, setFiltroDist] = useState("Todos");
+    const [modalTalVisivel, setModalTalVisivel] = useState(false);
+    const [modalAtaVisivel, setModalAtaVisivel] = useState(false);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -32,6 +34,7 @@ export default function Ataques() {
             async function carregar() {
                 if (isActive) {
                     carregaAtributos();
+                    carregaTalentos();
                 }
             }
 
@@ -41,10 +44,6 @@ export default function Ataques() {
             };
         }, [])
     );
-
-    useEffect(() => {
-        carregaTalentos();
-    }, [])
 
     useEffect(() => {
         carregaAtaques();
@@ -81,12 +80,21 @@ export default function Ataques() {
         setListaAtaques(todosAtaques)
     }
 
-    const TopoLista = () => {
+    const TopoListaAtaques = () => {
         return <>
             <AtrAux listaAtr={listaAtr} setAtrSelecionado={setAtrSelecionado}/>
             <ModalAtributos atrSelecionado={atrSelecionado} setAtrSelecionado={setAtrSelecionado}
                             setAtributos={carregaAtributos}/>
             <Texto style={estilos.titulo}>Ataques</Texto>
+
+            <View style={estilos.viewNovoTalento}>
+                <TouchableOpacity style={estilos.botaoNovoTalento} onPress={() => {
+                    setModalAtaVisivel(true)
+                }}>
+                    <Texto style={estilos.textoNovoTalento}>Criar novo ataque</Texto>
+                </TouchableOpacity>
+            </View>
+
             <View style={estilos.modalPicker}>
                 <Picker
                     selectedValue={filtroDist}
@@ -99,23 +107,40 @@ export default function Ataques() {
                     <Picker.Item label="Longa (100 m)" value="Longa (100 m)"/>
                 </Picker>
             </View>
-            <ModalAtaques selecionado={ataqueSelecionado} setSelecionado={setAtaqueSelecionado}
+            <ModalTalentos selecionado={talentoSelecionado} setSelecionado={setTalentoSelecionado}
+                           modalVisivel={modalTalVisivel} setModalVisivel={setModalTalVisivel} setTalentos={carregaTalentos}/>
+
+            <ModalAtaques selecionado={ataqueSelecionado} setSelecionado={setAtaqueSelecionado} modalVisivel={modalAtaVisivel} setModalVisivel={setModalAtaVisivel}
                           setAtaques={carregaAtaques}/>
         </>
+    }
+
+    const TopoListaTalentos = () => {
+        return<>
+            <Texto style={estilos.titulo}>Talentos usados em combate</Texto>
+
+            <View style={estilos.viewNovoTalento}>
+                <TouchableOpacity style={estilos.botaoNovoTalento} onPress={() => {
+                    setModalTalVisivel(true)
+                }}>
+                    <Texto style={estilos.textoNovoTalento}>Criar novo talento</Texto>
+                </TouchableOpacity>
+            </View>
+        </>
+
     }
 
     const CaudaLista = () => {
 
         return <>
-            <Texto style={estilos.titulo}>Talentos usados em combate</Texto>
-            <ModalTalentos selecionado={talentoSelecionado} setSelecionado={setTalentoSelecionado}
-                           setTalentos={carregaTalentos}/>
+
             <FlatList
                 data={listaTalentos}
                 renderItem={
-                    ({item}) => <Talento {...item} setSelecionado={setTalentoSelecionado}/>
+                    ({item}) => <Talento {...item} setSelecionado={setTalentoSelecionado} setModalVisivel={setModalTalVisivel}/>
                 }
                 keyExtractor={({id}) => id}
+                ListHeaderComponent={TopoListaTalentos}
                 style={estilos.lista}/>
         </>
     }
@@ -124,10 +149,10 @@ export default function Ataques() {
         data={listaAtaques}
         renderItem={
             ({item}) => <Ataque ataque={item} forcaAgilidade={forcaAgilidade}
-                                setSelecionado={setAtaqueSelecionado}/>
+                                setSelecionado={setAtaqueSelecionado} setModalVisivel={setModalAtaVisivel}/>
         }
         keyExtractor={({id}) => id}
-        ListHeaderComponent={TopoLista}
+        ListHeaderComponent={TopoListaAtaques}
         ListFooterComponent={CaudaLista}
         style={estilos.lista}/>
 
@@ -164,5 +189,21 @@ const estilos = StyleSheet.create({
         borderColor: '#FCFBDDFF',
         marginBottom: 12,
     },
+    viewNovoTalento: {
+        flexDirection: "row",
+        justifyContent: "center",
+        paddingTop:6,
+        paddingBottom: 12,
+    },
+    botaoNovoTalento: {
+        backgroundColor: '#ad0606',
+        borderRadius: 5,
+        padding: 8,
+        alignItems: "center",
+    },
+    textoNovoTalento: {
+        color: '#000',
+        fontSize: 21,
+    }
 })
 
