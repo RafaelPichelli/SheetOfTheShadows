@@ -3,57 +3,71 @@ import { Modal, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from
 import Texto from "./Texto";
 import {atualizaGeral} from "../servicos/geraisDB";
 
-export default function ModalSorte({geralSelecionado, setGeralSelecionado, setGerais}) {
+export default function ModalGerais({geraisSelecionados, setGeraisSelecionados,modalVisivel ,setModalVisivel, setGerais}) {
 
     useEffect(() =>{
-        if (geralSelecionado){
-            setModalVisivel(true)
-            preencheModal()
+        if (modalVisivel){
+            preencheModal();
             return
         }
-    },[geralSelecionado])
+    },[modalVisivel])
 
-    const [valor,setValor] = useState("")
-    const [modalVisivel, setModalVisivel] = useState(false);
+    const [nivel, setNivel] = useState("");
+    const [ancestralidade, setAncestralidade] = useState("");
+    const [classe, setClasse] = useState("")
     async function salvaValor(){
-        const atributo = {
-            nome: "Sorte",
-            texto: valor.toString()
+        const novoNivel = {
+            nome: "nivelDoPersonagem",
+            texto: nivel.toString()
+        }
+        const novaAncestralidade = {
+            nome: "ancesDoPersonagem",
+            texto: ancestralidade.toString()
+        }
+        const novaClasse = {
+            nome: "classeDoPersonagem",
+            texto: classe.toString()
         }
         try {
-            await atualizaGeral(atributo);
+            await atualizaGeral(novoNivel);
+            await atualizaGeral(novaAncestralidade);
+            await atualizaGeral(novaClasse);
         }catch (e) {
             console.log(e.message);
         }
 
-        setSorte();
+        setGerais();
         fechaModal();
     }
 
-    function preecheModal(){
-        setValor(geralSelecionado.texto)
 
+    function preencheModal(){
+        setNivel(geraisSelecionados[0].toString())
+        setAncestralidade(geraisSelecionados[1].toString())
+        setClasse(geraisSelecionados[2].toString())
     }
 
     function fechaModal(){
         setModalVisivel(false)
+        setGeraisSelecionados(["","",""])
     }
+
     function subtraiValor(){
-        let novoValor = valor - 1;
+        let novoValor = nivel - 1;
 
         if (!(novoValor > 0)){
-            setValor("0");
+            setNivel("0");
         }else{
-            setValor(novoValor.toString());
+            setNivel(novoValor.toString());
         }
     }
     function somaValor(){
-        let novoValor = parseInt(valor) + 1;
+        let novoValor = parseInt(nivel) + 1;
 
         if (!(novoValor > 0)){
-            setValor("1");
+            setNivel("1");
         }else{
-            setValor(novoValor.toString());
+            setNivel(novoValor.toString());
         }
     }
 
@@ -65,7 +79,8 @@ export default function ModalSorte({geralSelecionado, setGeralSelecionado, setGe
         <View style={estilos.centralizaModal}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={estilos.modal}>
-                    <Texto style={estilos.modalTitulo}>Sorte</Texto>
+                    <Texto style={estilos.modalTitulo}>Editar Nivel, Ancestralidade e Classe</Texto>
+                    <Texto style={estilos.modalTitulo}>Nivel</Texto>
                     <View style={estilos.modalBotoes}>
                         <TouchableOpacity style={estilos.modalBotaoMenos} onPress={() => {subtraiValor()}}>
                             <Texto style={estilos.modalBotaoTextoSomaSub}>-</Texto>
@@ -74,11 +89,21 @@ export default function ModalSorte({geralSelecionado, setGeralSelecionado, setGe
                             style={estilos.modalInput}
                             onChangeText={novoValor => novoValor > 0  ? setValor(novoValor.replaceAll(".","").trim()): setValor(valor)}
                             inputMode={"numeric"}
-                            value={valor}/>
+                            value={nivel}/>
                         <TouchableOpacity style={estilos.modalBotaoMais} onPress={() => {somaValor()}}>
                             <Texto style={estilos.modalBotaoTextoSomaSub}>+</Texto>
                         </TouchableOpacity>
                     </View>
+                    <Texto style={estilos.modalSubTitulo}>Ancestralidade</Texto>
+                    <TextInput
+                        style={estilos.modalInput}
+                        onChangeText={novoNome => setAncestralidade(novoNome)}
+                        value={ancestralidade}/>
+                    <Texto style={estilos.modalSubTitulo}>Classe</Texto>
+                    <TextInput
+                        style={estilos.modalInput}
+                        onChangeText={novoNome => setClasse(novoNome)}
+                        value={classe}/>
                     <View style={estilos.modalBotoes}>
                         <TouchableOpacity style={estilos.modalBotaoSalvar} onPress={() => {salvaValor()}}>
                             <Texto style={estilos.modalBotaoTexto}>Salvar</Texto>
@@ -123,6 +148,12 @@ const estilos = StyleSheet.create({
         textAlign: "center",
         color: '#000'
     },
+    modalSubTitulo: {
+        fontSize: 22,
+        marginBottom: 8,
+        fontWeight: "600",
+        color: "#000",
+    },
     modalInput: {
         fontSize: 36,
         color:'#000',
@@ -135,6 +166,7 @@ const estilos = StyleSheet.create({
     modalBotoes: {
         flexDirection: "row",
         justifyContent: "space-between",
+        paddingTop:8,
         paddingBottom:12
     },
     modalBotaoSalvar: {

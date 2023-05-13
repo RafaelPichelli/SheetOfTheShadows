@@ -5,6 +5,7 @@ import {buscaGerais, buscaGeral, dropTableGerais} from "../servicos/geraisDB";
 import Sorte from "./Sorte";
 import ModalSorte from "./ModalSorte";
 import ModalNome from "./ModalNome";
+import ModalGerais from "./ModalGerais";
 
 
 export default function Topo() {
@@ -14,6 +15,7 @@ export default function Topo() {
     const [modalSorteVisivel, setModalSorteVisivel] = useState(false)
     const [modalNomeVisivel, setModalNomeVisivel] = useState(false)
     const [modalGeraisVisivel, setModalGeraisVisivel] = useState(false)
+    const [geraisSelecionados, setGeraisSelecionados] = useState(["","",""])
     useState(() => {
         carregaGerais();
         carregaNome();
@@ -39,9 +41,10 @@ export default function Topo() {
         setSorte(sorte[0].texto)
     }
 
-    const nivelPersonagem = gerais[1].texto;
-    const racaPersonagem = gerais[2].texto;
-    const classePersonagem = gerais[3].texto;
+    function abreModalGerais(){
+        setGeraisSelecionados([gerais[1].texto,gerais[2].texto,gerais[3].texto]);
+        setModalGeraisVisivel(true);
+    }
 
     return <>
         <View style={estilos.topo}>
@@ -49,9 +52,9 @@ export default function Topo() {
                 <Texto style={estilos.nomePersonagem}>{nomePersonagem}</Texto>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => console.log("press")}>
+            <TouchableOpacity onPress={() => abreModalGerais()}>
                 <Texto
-                    style={estilos.detalhesPersonagem}>{` Niv.: ${nivelPersonagem}, ` + racaPersonagem + ", " + classePersonagem}</Texto>
+                    style={estilos.detalhesPersonagem}>{` Niv.: ${gerais[1].texto}, ` + gerais[2].texto + ", " + gerais[3].texto}</Texto>
             </TouchableOpacity>
 
             <Sorte sorte={sorte} modalSorteVisivel={setModalSorteVisivel}/>
@@ -60,6 +63,7 @@ export default function Topo() {
                     setSorte={carregaSorte}/>
         <ModalNome nome={nomePersonagem} modalVisivel={modalNomeVisivel} setModalVisivel={setModalNomeVisivel}
                    setNome={carregaNome}/>
+        <ModalGerais geraisSelecionados={geraisSelecionados} setGeraisSelecionados={setGeraisSelecionados} modalVisivel={modalGeraisVisivel} setModalVisivel={setModalGeraisVisivel} setGerais={carregaGerais} />
     </>
 }
 
