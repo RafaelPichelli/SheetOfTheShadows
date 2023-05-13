@@ -37,7 +37,7 @@ export default function ModalItens({selecionado, setSelecionado, setItens}) {
             id: selecionado[0],
             nome: nome,
             quantidade: quantidade,
-            temUsos: temUsos,
+            temUsos: Boolean(temUsos),
             usosRestantes: usosRestantes
         };
         await atualizaItem(item);
@@ -54,7 +54,7 @@ export default function ModalItens({selecionado, setSelecionado, setItens}) {
     function preencheModal(){
         setNome(selecionado[1])
         setQuantidade(selecionado[2].toString())
-        setTemUsos(selecionado[3])
+        setTemUsos(Boolean(selecionado[3]));
         setUsosRestantes(selecionado[4].toString())
     }
 
@@ -130,20 +130,20 @@ export default function ModalItens({selecionado, setSelecionado, setItens}) {
                                 color={temUsos ? '#ad0606' : undefined}
                             />
                             { temUsos ? <>
-                            <Texto style={estilos.modalSubTituloCentral}>Quantidade de usos restantes</Texto>
-                            <View style={estilos.modalBotoes}>
-                                <TouchableOpacity style={estilos.modalBotaoMenos} onPress={() => {subtraiValor(usosRestantes,setUsosRestantes)}}>
-                                    <Texto style={estilos.modalBotaoTextoSomaSub}>-</Texto>
-                                </TouchableOpacity>
-                                <TextInput
-                                    style={estilos.modalInput}
-                                    onChangeText={novoUso => novoUso > 0  ? setUsosRestantes(novoUso.replaceAll(".","").trim()): setUsosRestantes(usosRestantes)}
-                                    inputMode={"numeric"}
-                                    value={usosRestantes}/>
-                                <TouchableOpacity style={estilos.modalBotaoMais} onPress={() => {somaValor(usosRestantes,setUsosRestantes)}}>
-                                    <Texto style={estilos.modalBotaoTextoSomaSub}>+</Texto>
-                                </TouchableOpacity>
-                            </View>
+                                    <Texto style={estilos.modalSubTituloCentral}>Quantidade de usos restantes</Texto>
+                                    <View style={estilos.modalBotoes}>
+                                        <TouchableOpacity style={estilos.modalBotaoMenos} onPress={() => {subtraiValor(usosRestantes,setUsosRestantes)}}>
+                                            <Texto style={estilos.modalBotaoTextoSomaSub}>-</Texto>
+                                        </TouchableOpacity>
+                                        <TextInput
+                                            style={estilos.modalInput}
+                                            onChangeText={novoUso => novoUso > 0  ? setUsosRestantes(novoUso.replaceAll(".","").trim()): setUsosRestantes(usosRestantes)}
+                                            inputMode={"numeric"}
+                                            value={usosRestantes}/>
+                                        <TouchableOpacity style={estilos.modalBotaoMais} onPress={() => {somaValor(usosRestantes,setUsosRestantes)}}>
+                                            <Texto style={estilos.modalBotaoTextoSomaSub}>+</Texto>
+                                        </TouchableOpacity>
+                                    </View>
                                 </>
                                 : <></>
                             }
